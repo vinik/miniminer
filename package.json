@@ -5,7 +5,7 @@
   "main": "robot.js",
   "scripts": {
     "test": "mocha feeder/test --recursive -R progress",
-    "start": "coffee robot.coffee"
+    "start": "pwd && ls -la && ./node_modules/.bin/coffee robot.coffee"
   },
   "repository": {
     "type": "git",

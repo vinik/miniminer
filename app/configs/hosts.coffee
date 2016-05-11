@@ -1,11 +1,16 @@
+dbHost = process.env.OPENSHIFT_MYSQL_DB_HOST || 'localhost';
+dbPort = process.env.OPENSHIFT_MYSQL_DB_PORT || 3306;
+dbUser = process.env.OPENSHIFT_MYSQL_DB_USERNAME || 'root';
+dbPassword = process.env.OPENSHIFT_MYSQL_DB_PASSWORD || '';
+dbName = process.env.OPENSHIFT_GEAR_NAME || 'miniminer';
+
+
 module.exports =
     mysqlParams:
-        host : '127.0.0.1'
-        port: 3306
+        host : dbHost
+        port: dbPort
         poolSize : 10
-        user : 'root'
-        password : ''
-        domain : 'miniminer'
+        user : dbUser
+        password : dbPassword
+        domain : dbName
         resource : 'currencies'
-    authenticateUrl: 'http://localhost:1337'
-    timeout_orders: 2 #In hours

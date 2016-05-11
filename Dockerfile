@@ -4,7 +4,7 @@ MAINTAINER Vinicius Kirst <vinicius.kirst@gmail.com>
 
 COPY . /src
 
-EXPOSE 8888
+EXPOSE 1234
 
 WORKDIR /src
 RUN npm install
