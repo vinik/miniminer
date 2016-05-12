@@ -1,5 +1,5 @@
 'use strict'
-# C = null
+C = null
 wpRules = null
 querystring = null
 
@@ -14,7 +14,7 @@ class CurrencyAdapter
         @Parser = deps?.xmlParser || require('xml2js').Parser
         @moment = deps?.moment || require 'moment'
         querystring = require 'querystring'
-        # C = deps?.constants || require '../../Constants'
+        C = deps?.constants || require '../../Constants'
         @wpRules = require('waferpie-utils').Rules
         @hosts = deps?.hosts || require '../../configs/hosts'
 
@@ -22,11 +22,11 @@ class CurrencyAdapter
 
     find: (inputMessage, entityCallback) ->
         $ = new @QueryBuilder
-        query = $.select('id')
+        query = $.select('currency_id')
             .from('currencies')
             .where(
-                $.equal('reference', $.escape(inputMessage.data.reference)),
-                $.equal('auth_token', $.escape(inputMessage.data.auth_token))
+                #$.equal('reference', $.escape(inputMessage.data.reference)),
+                #$.equal('auth_token', $.escape(inputMessage.data.auth_token))
             )
             .limit(1)
             .build()
@@ -57,7 +57,7 @@ class CurrencyAdapter
     getCurrency: (inputMessage, entityCallback) ->
 
         fields = [
-            'currencies.id'
+            'currencies.currency_id'
             'currencies.name'
         ]
 

@@ -9,7 +9,6 @@ class CurrencyEntity
 
     create: (inputMessage, interactorCallback) ->
         adapter = new @Adapter
-        inputMessage.data.reference = inputMessage.data.id
         inputMessage.data.id = @_getUUID()
         inputMessage.data.created = @moment.utc().format(C.FORMAT.MILLISECOND_TIMESTAMP)
         adapter.create inputMessage, interactorCallback

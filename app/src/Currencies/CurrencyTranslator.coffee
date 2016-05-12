@@ -1,13 +1,13 @@
 'use strict'
 
-#C = null
+C = null
 
 class CurrencyTranslator
 
     CurrencyInteractor: require './CurrencyInteractor'
 
     constructor: (deps) ->
-        #C = deps?.constants || require '../../Constants'
+        C = deps?.constants || require '../../Constants'
 
     post: (req, res, next) =>
         orderInteractor = new @CurrencyInteractor
@@ -44,18 +44,14 @@ class CurrencyTranslator
     find: (req, res, next) =>
         orderInteractor = new @CurrencyInteractor
         orderIdentifierId = null
-        orderIdentifierReference = null
 
         if req?.params?.id?
             orderIdentifierId = req.params.id
         else if req?.query?.order_id?
             orderIdentifierId = req.query.order_id
-        else if req?.query?.reference?
-            orderIdentifierReference = req.query.reference
         inputMessage =
             data:
                 id: orderIdentifierId
-                reference: orderIdentifierReference
                 auth_token: req.query.auth_token
 
         orderInteractor.find inputMessage, (outputMessage) =>

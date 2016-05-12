@@ -1,7 +1,7 @@
-dbHost = process.env.OPENSHIFT_MYSQL_DB_HOST || 'localhost';
+dbHost = process.env.OPENSHIFT_MYSQL_DB_HOST || '127.0.0.1';
 dbPort = process.env.OPENSHIFT_MYSQL_DB_PORT || 3306;
 dbUser = process.env.OPENSHIFT_MYSQL_DB_USERNAME || 'root';
-dbPassword = process.env.OPENSHIFT_MYSQL_DB_PASSWORD || '';
+dbPassword = process.env.OPENSHIFT_MYSQL_DB_PASSWORD || 'changeme';
 dbName = process.env.OPENSHIFT_GEAR_NAME || 'miniminer';
 
 

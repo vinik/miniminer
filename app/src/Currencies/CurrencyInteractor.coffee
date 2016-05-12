@@ -1,12 +1,12 @@
 'use strict'
-# C = null
+C = null
 # _ = require 'underscore'
 
 class CurrencyInteractor
 
     constructor: (deps) ->
         @Entity = deps?.entities?.Currency or require './CurrencyEntity'
-        # C = deps?.constants or require '../../Constants'
+        C = deps?.constants or require '../../Constants'
         @async = deps?.async or require 'async'
 
     create: (inputMessage, translatorCallback) ->
@@ -28,8 +28,8 @@ class CurrencyInteractor
         orderInputMessage =
             data:
                 # auth_token: inputMessage.data.auth_token
-                field: if inputMessage?.data?.id? then 'id' else 'reference'
-                value: if inputMessage?.data?.id? then inputMessage.data.id else inputMessage.data.reference
+                field: 'currency_id'
+                value: inputMessage.data.id
 
         entity.getCurrency orderInputMessage, (outputMessage) ->
             translatorCallback outputMessage
