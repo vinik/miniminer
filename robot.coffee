@@ -20,7 +20,7 @@ startServer = ->
 
 startTasker= ->
     tasks = []
-    tasks.push new (require './app/src/Orders/TraderTask')
+    tasks.push new (require './app/src/Agents/AgentTask')
 
     Watcher = require('waferpie-utils').Watcher
     watcher = new Watcher
@@ -28,6 +28,7 @@ startTasker= ->
         watcher.register task, (err) ->
             console.log err if err?
             console.log "#{task.name} registered." unless err?
+            console.log watcher.status()
 
 options = process.argv.slice 2
 
