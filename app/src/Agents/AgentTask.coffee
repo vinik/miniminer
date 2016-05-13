@@ -3,7 +3,7 @@
 class AgentTask
 
     name: 'AgentTask'
-    interval: 10000
+    interval: 3000
 
     constructor: (deps) ->
         @Interactor = deps?.entities?.interactor || require '../Currencies/CurrencyInteractor'
@@ -12,7 +12,7 @@ class AgentTask
 
     run: (emitter) ->
         console.log "AgentTask"
-        return true
+        emitter.emit 'success'
 
     stop: ->
         @logger.log 'info', 'parando...'
