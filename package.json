@@ -5,7 +5,7 @@
   "main": "robot.js",
   "scripts": {
     "test": "mocha feeder/test --recursive -R progress",
-    "start": "pwd && ls -la && ./node_modules/.bin/coffee robot.coffee"
+    "start": "./node_modules/.bin/coffee robot.coffee"
   },
   "repository": {
     "type": "git",
@@ -31,9 +31,12 @@
     "bitcoin-mock": "^0.0.5"
   },
   "dependencies": {
+    "bitcoinjs-lib": "^2.2.0",
     "coffee-script": "^1.10.0",
     "coinbase-service": "^1.0.4",
     "coindust": "^0.3.5",
+    "json": "^9.0.3",
+    "query-string": "^3.0.0",
     "request": "^2.72.0",
     "restwork": "git://github.com/s2way/restwork.git",
     "waferpie-utils": "git://github.com/s2way/waferpie-utils.git",

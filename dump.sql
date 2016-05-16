@@ -31,10 +31,9 @@ DROP TABLE IF EXISTS `currencies`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `currencies` (
-  `currency_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `symbol` varchar(45) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `short` varchar(45) NOT NULL,
-  PRIMARY KEY (`currency_id`)
+  PRIMARY KEY (`symbol`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -44,6 +43,14 @@ CREATE TABLE `currencies` (
 
 LOCK TABLES `currencies` WRITE;
 /*!40000 ALTER TABLE `currencies` DISABLE KEYS */;
+INSERT INTO currencies (symbol,name)
+VALUES
+('BTC', 'Bitcoin'),
+('ETH', 'Ethereum'),
+('XRP', 'Ripple'),
+('LTC', 'Litecoin'),
+('DASH', 'Dash');
+
 /*!40000 ALTER TABLE `currencies` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

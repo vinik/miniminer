@@ -8,6 +8,10 @@ class CurrencyInteractor
         @Entity = deps?.entities?.Currency or require './CurrencyEntity'
         C = deps?.constants or require '../../Constants'
         @async = deps?.async or require 'async'
+        querystring = require 'querystring'
+        @hosts = deps?.hosts || require '../../configs/hosts'
+        @https = deps?.connector?.https || require 'https'
+        @json = deps?.connector?.json || require 'json'
 
     create: (inputMessage, translatorCallback) ->
         entity = new @Entity
@@ -34,6 +38,34 @@ class CurrencyInteractor
         entity.getCurrency orderInputMessage, (outputMessage) ->
             translatorCallback outputMessage
 
+    getBitCoinValue: (callback) ->
+
+        request = require('request');
+        request(@hosts.coinmarketcap.url + "ticker/bitcoin", (error, response, body)->
+            console.log(body)
+            callback body
+        )
+
+    getMostProfitableToMine: (callback) ->
+
+        request = require('request');
+        request(@hosts.coinmarketcap.url + "ticker", (error, response, body)->
+            #console.log(body)
+
+            json = JSON.parse body
+            console.log json[0].id
+
+
+            first = null
+            last = null
+            list = [0, 1, 2, 3, 4]
+            list2 = list
+            list2[item] = json[item].id for item in list
+
+            callback list2
+        )
+
+    #getTop: (top, callback)
 
     _log: (msg) ->
         console.log msg

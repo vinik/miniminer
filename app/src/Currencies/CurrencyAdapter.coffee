@@ -147,5 +147,32 @@ class CurrencyAdapter
     _callbackError: (errorMessage, callback) ->
         callback error: errorMessage
 
+    getBitCoinValue: (xml, callback) ->
+
+        #postData = querystring.stringify mensagem: xml
+
+        options =
+            hostname: @hosts.coinmarketcap.url
+            path: "ticker/bitcoin/"
+            method: 'GET'
+            headers:
+                ''
+                # 'Content-Type': 'application/x-www-form-urlencoded'
+                # 'Content-Length': postData.length
+        req = @https.request options, (res) ->
+            str = ''
+            res.on 'data', (d) ->
+                str += d
+            res.on 'end', ->
+                clearTimeout reqTimeout
+                callback null, str.toString('utf8')
+        req.on 'error', (e) ->
+            callback e
+        req.end(postData)
+        reqTimeout = @_timeout ->
+            req.abort()
+            clearTimeout reqTimeout
+        , 30000
+
 
 module.exports = CurrencyAdapter

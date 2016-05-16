@@ -14,3 +14,5 @@ module.exports =
         password : dbPassword
         domain : dbName
         resource : 'currencies'
+    coinmarketcap:
+        url: "https://api.coinmarketcap.com/v1/"
