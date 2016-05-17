@@ -1,6 +1,6 @@
 'use strict'
 
-Order = require '../../src/Currencies/CurrencyEntity'
+Currency = require '../../src/Currencies/CurrencyEntity'
 expect = require 'expect.js'
 Error = require 'errno-codes'
 
@@ -15,29 +15,24 @@ describe 'The Currency entity,', ->
         beforeEach ->
             inputMessage =
                 data:
-                    id: 52
-                    authToken: 'my_ecommerce'
-                    description: 'Teste recarga'
-                    amount: 20
-                    return_url: 'http://localhost.com'
+                    symbol: 52
+                    name: 'my_ecommerce'
 
             expectedMessage =
                 error:
                     name: "ValidationFailed"
                     fields:
-                        id: true
-                        return_url: true
-                        description: true
-                        amount: true
+                        symbol: true
+                        name: true
 
             class Adapter
                 find: (params, callback) ->
                     callback()
 
-            deps = {adapters: {Order : Adapter}, tokens: ['token1']}
+            deps = {adapters: {Currency : Adapter}, tokens: ['token1']}
 
         it 'should callback null if there were no errors', (done) ->
-            instance = new Order deps
+            instance = new Currency deps
             instance.creationValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).not.to.be.ok()
                 done()
@@ -45,7 +40,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if the id is a big no', (done) ->
             expectedMessage.error.fields = 'id': 'message': 'Field is invalid'
             inputMessage.data.id = undefined
-            instance = new Order deps
+            instance = new Currency deps
             instance.creationValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -55,19 +50,19 @@ describe 'The Currency entity,', ->
             class Adapter
                 find: (params, callback) ->
                     callback error: 'annoying error'
-            deps = {adapters: {Order : Adapter}, tokens: ['token1']}
-            instance = new Order deps
+            deps = {adapters: {Currency : Adapter}, tokens: ['token1']}
+            instance = new Currency deps
             instance.creationValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
 
         it 'should fire a validation error if the order already exists', (done) ->
-            expectedMessage.error.fields = 'id': 'message': 'Order already created'
+            expectedMessage.error.fields = 'id': 'message': 'Currency already created'
             class Adapter
                 find: (params, callback) ->
                     callback success: an : 'order'
-            deps = {adapters: {Order : Adapter}, tokens: ['token1']}
-            instance = new Order deps
+            deps = {adapters: {Currency : Adapter}, tokens: ['token1']}
+            instance = new Currency deps
             instance.creationValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -76,8 +71,8 @@ describe 'The Currency entity,', ->
             class Adapter
                 find: (params, callback) ->
                     callback error: 'NOT_FOUND'
-            deps = {adapters: {Order : Adapter}, tokens: ['token1']}
-            instance = new Order deps
+            deps = {adapters: {Currency : Adapter}, tokens: ['token1']}
+            instance = new Currency deps
             instance.creationValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).not.to.be.ok()
                 done()
@@ -85,7 +80,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if description is undefined', (done) ->
             expectedMessage.error.fields = 'description': 'message': 'Field is invalid'
             inputMessage.data.description = undefined
-            instance = new Order deps
+            instance = new Currency deps
             instance.creationValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -93,7 +88,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if description is empty', (done) ->
             expectedMessage.error.fields = 'description': 'message': 'Field is invalid'
             inputMessage.data.description = {}
-            instance = new Order deps
+            instance = new Currency deps
             instance.creationValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -101,7 +96,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if description is too long', (done) ->
             expectedMessage.error.fields = 'description': 'message': 'Value too long. Check the schema.'
             inputMessage.data.description = new Array(1026).join 'i'
-            instance = new Order deps
+            instance = new Currency deps
             instance.creationValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -109,7 +104,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if the return url was not valid', (done) ->
             expectedMessage.error.fields = 'return_url': 'message': 'Value is invalid'
             inputMessage.data.return_url = 'www.google.com'
-            instance = new Order deps
+            instance = new Currency deps
             instance.creationValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -117,7 +112,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if the return url was not valid', (done) ->
             expectedMessage.error.fields = 'return_url': 'message': 'Value is invalid'
             inputMessage.data.return_url = 'http:www.google.com'
-            instance = new Order deps
+            instance = new Currency deps
             instance.creationValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -125,14 +120,14 @@ describe 'The Currency entity,', ->
         it 'should return an error if the return url was not valid', (done) ->
             expectedMessage.error.fields = 'return_url': 'message': 'Value is invalid'
             inputMessage.data.return_url = 'google.com'
-            instance = new Order deps
+            instance = new Currency deps
             instance.creationValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
 
         it 'should not return an error if the return url has a port', (done) ->
             inputMessage.data.return_url = 'http://desenv.localhost:8090/cliente'
-            instance = new Order deps
+            instance = new Currency deps
             instance.creationValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).not.to.be.ok()
                 done()
@@ -140,7 +135,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if the return url was not sent', (done) ->
             expectedMessage.error.fields = 'return_url': 'message': 'Field is invalid'
             inputMessage.data.return_url = {}
-            instance = new Order deps
+            instance = new Currency deps
             instance.creationValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -148,7 +143,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if the return url is too long', (done) ->
             expectedMessage.error.fields = 'return_url': 'message': 'Value too long. Check the schema.'
             inputMessage.data.return_url = new Array(2050).join 'i'
-            instance = new Order deps
+            instance = new Currency deps
             instance.creationValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -156,7 +151,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if amount is undefined', (done) ->
             expectedMessage.error.fields = 'amount': 'message': 'Field is invalid'
             inputMessage.data.amount = undefined
-            instance = new Order deps
+            instance = new Currency deps
             instance.creationValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -164,7 +159,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if amount is empty', (done) ->
             expectedMessage.error.fields = 'amount': 'message': 'Field is invalid'
             inputMessage.data.amount = {}
-            instance = new Order deps
+            instance = new Currency deps
             instance.creationValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -172,7 +167,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if amount is too long', (done) ->
             expectedMessage.error.fields = 'amount': 'message': 'Value too long. Check the schema.'
             inputMessage.data.amount = new Array(14).join '0'
-            instance = new Order deps
+            instance = new Currency deps
             instance.creationValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -180,7 +175,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if amount has a dot', (done) ->
             expectedMessage.error.fields = 'amount': 'message': 'Value must be represented in cents. Don\'t use dots or commas.'
             inputMessage.data.amount = 20.1
-            instance = new Order deps
+            instance = new Currency deps
             instance.creationValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -188,7 +183,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if amount has a comma', (done) ->
             expectedMessage.error.fields = 'amount': 'message': 'Value must be represented in cents. Don\'t use dots or commas.'
             inputMessage.data.amount = '20,01'
-            instance = new Order deps
+            instance = new Currency deps
             instance.creationValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -217,7 +212,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if auth_token is empty', (done) ->
             expectedMessage.error.fields = 'auth_token': 'message': 'Field is invalid'
             inputMessage.data.auth_token = ''
-            instance = new Order deps
+            instance = new Currency deps
             instance.inspectValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -225,7 +220,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if auth_token is undefined', (done) ->
             expectedMessage.error.fields = 'auth_token': 'message': 'Field is invalid'
             delete inputMessage.data.auth_token
-            instance = new Order deps
+            instance = new Currency deps
             instance.inspectValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -238,7 +233,7 @@ describe 'The Currency entity,', ->
                     'message': 'Field is invalid'
 
             inputMessage.data.id = ''
-            instance = new Order deps
+            instance = new Currency deps
             instance.inspectValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -252,7 +247,7 @@ describe 'The Currency entity,', ->
 
             inputMessage.data.id = ''
             inputMessage.data.reference = ''
-            instance = new Order deps
+            instance = new Currency deps
             instance.inspectValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -265,7 +260,7 @@ describe 'The Currency entity,', ->
                     'message': 'Field is invalid'
 
             delete inputMessage.data.id
-            instance = new Order deps
+            instance = new Currency deps
             instance.inspectValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -279,7 +274,7 @@ describe 'The Currency entity,', ->
 
             delete inputMessage.data.id
             delete inputMessage.data.reference
-            instance = new Order deps
+            instance = new Currency deps
             instance.inspectValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -287,7 +282,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if auth_token not valid', (done) ->
             expectedMessage.error.fields = 'auth_token': 'message': 'Token unknown.'
             inputMessage.data.auth_token = 'invalid toko'
-            instance = new Order deps
+            instance = new Currency deps
             instance.inspectValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -327,54 +322,54 @@ describe 'The Currency entity,', ->
                         token: true
 
             class Adapter
-                getOrder: (params, callback) ->
+                getCurrency: (params, callback) ->
                     callback success:
                         id: 'any id'
                         status: 'CREATED'
                         auth_token: inputMessage.data.auth_token
 
 
-            deps = {adapters: {Order : Adapter}, tokens: ['token1']}
+            deps = {adapters: {Currency : Adapter}, tokens: ['token1']}
 
         it 'should return an error if the order was not found', (done) ->
 
             expectedMessage.error.fields = 'id': 'message': 'NOT_FOUND'
 
             class Adapter
-                getOrder: (params, callback) ->
+                getCurrency: (params, callback) ->
                     callback error: 'NOT_FOUND'
 
-            deps = {adapters: {Order : Adapter}, tokens: ['token1']}
-            instance = new Order deps
+            deps = {adapters: {Currency : Adapter}, tokens: ['token1']}
+            instance = new Currency deps
             instance.processValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
 
         it 'should fire a validation error if the order was already processed', (done) ->
-            expectedMessage.error.fields = 'id': 'message': 'Order already processed'
+            expectedMessage.error.fields = 'id': 'message': 'Currency already processed'
             class Adapter
-                getOrder: (params, callback) ->
+                getCurrency: (params, callback) ->
                     callback success:
                         id: 'id'
                         status: 'AUTHORIZED'
                         auth_token: inputMessage.data.auth_token
 
-            deps = {adapters: {Order : Adapter}, tokens: ['token1']}
-            instance = new Order deps
+            deps = {adapters: {Currency : Adapter}, tokens: ['token1']}
+            instance = new Currency deps
             instance.processValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
 
         it 'should not fire a validation error if the order last status is error', (done) ->
             class Adapter
-                getOrder: (params, callback) ->
+                getCurrency: (params, callback) ->
                     callback success:
                         id: 'id'
                         status: 'ERROR'
                         auth_token: inputMessage.data.auth_token
 
-            deps = {adapters: {Order : Adapter}, tokens: ['token1']}
-            instance = new Order deps
+            deps = {adapters: {Currency : Adapter}, tokens: ['token1']}
+            instance = new Currency deps
             instance.processValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).not.to.be.ok()
                 done()
@@ -384,29 +379,29 @@ describe 'The Currency entity,', ->
             expectedMessage.error.fields = 'id': 'message': 'Processing token is different from the creation token'
 
             class Adapter
-                getOrder: (params, callback) ->
+                getCurrency: (params, callback) ->
                     callback success:
                         id: 'any id'
                         auth_token: 'any_token'
 
             inputMessage.data.auth_token = 'other_token'
 
-            deps = {adapters: {Order : Adapter}, tokens: ['token1', 'other_token', 'any_token']}
-            instance = new Order deps
+            deps = {adapters: {Currency : Adapter}, tokens: ['token1', 'other_token', 'any_token']}
+            instance = new Currency deps
             instance.processValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
 
         it 'should be ok if the order has one status only', (done) ->
             class Adapter
-                getOrder: (params, callback) ->
+                getCurrency: (params, callback) ->
                     callback success:
                         id: 'any id'
                         status: 'CREATED'
                         auth_token: inputMessage.data.auth_token
 
-            deps = {adapters: {Order : Adapter}, tokens: ['token1']}
-            instance = new Order deps
+            deps = {adapters: {Currency : Adapter}, tokens: ['token1']}
+            instance = new Currency deps
             instance.processValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).not.to.be.ok()
                 done()
@@ -414,7 +409,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if auth_token is empty', (done) ->
             expectedMessage.error.fields = 'auth_token': 'message': 'Field is invalid'
             inputMessage.data.auth_token = ''
-            instance = new Order deps
+            instance = new Currency deps
             instance.processValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -422,7 +417,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if auth_token is undefined', (done) ->
             expectedMessage.error.fields = 'auth_token': 'message': 'Field is invalid'
             delete inputMessage.data.auth_token
-            instance = new Order deps
+            instance = new Currency deps
             instance.processValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -430,7 +425,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if issuer is empty', (done) ->
             expectedMessage.error.fields = 'issuer': 'message': 'Field is invalid'
             inputMessage.data.issuer = {}
-            instance = new Order deps
+            instance = new Currency deps
             instance.processValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -438,7 +433,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if issuer is unknown', (done) ->
             expectedMessage.error.fields = 'issuer': 'message': 'Issuer unknown.'
             inputMessage.data.issuer = 'not a valid issuer'
-            instance = new Order deps
+            instance = new Currency deps
             instance.processValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -447,7 +442,7 @@ describe 'The Currency entity,', ->
             expectedMessage.error.fields = 'card_number': 'message': 'Field is invalid'
             inputMessage.data.card_number = {}
             inputMessage.data.token = {}
-            instance = new Order deps
+            instance = new Currency deps
             instance.processValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -456,7 +451,7 @@ describe 'The Currency entity,', ->
             expectedMessage.error.fields = 'card_number': 'message': 'Field is invalid'
             inputMessage.data.card_number = 0
             inputMessage.data.token = {}
-            instance = new Order deps
+            instance = new Currency deps
             instance.processValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -464,7 +459,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if card_number is too long', (done) ->
             expectedMessage.error.fields = 'card_number': 'message': 'Value too long. Check the schema.'
             inputMessage.data.card_number = new Array(22).join 'i'
-            instance = new Order deps
+            instance = new Currency deps
             instance.processValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -472,7 +467,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if card_number has not numbers only', (done) ->
             expectedMessage.error.fields = 'card_number': 'message': 'Value is invalid'
             inputMessage.data.card_number = '321165424687A'
-            instance = new Order deps
+            instance = new Currency deps
             instance.processValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -481,7 +476,7 @@ describe 'The Currency entity,', ->
             expectedMessage.error.fields = 'due_date': 'message': 'Field is invalid'
             inputMessage.data.due_date = {}
             inputMessage.data.token = {}
-            instance = new Order deps
+            instance = new Currency deps
             instance.processValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -490,7 +485,7 @@ describe 'The Currency entity,', ->
             expectedMessage.error.fields = 'due_date': 'message': 'Field is invalid'
             inputMessage.data.due_date = 0
             inputMessage.data.token = {}
-            instance = new Order deps
+            instance = new Currency deps
             instance.processValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -499,7 +494,7 @@ describe 'The Currency entity,', ->
             expectedMessage.error.fields = 'due_date': 'message': 'Value is invalid'
             inputMessage.data.due_date = '2012mm'
             inputMessage.data.token = {}
-            instance = new Order deps
+            instance = new Currency deps
             instance.processValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -507,7 +502,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if due_date is too long', (done) ->
             expectedMessage.error.fields = 'due_date': 'message': 'Value does not match the schema.'
             inputMessage.data.due_date = '1234567'
-            instance = new Order deps
+            instance = new Currency deps
             instance.processValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -515,7 +510,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if due_date is too short', (done) ->
             expectedMessage.error.fields = 'due_date': 'message': 'Value does not match the schema.'
             inputMessage.data.due_date = '12345'
-            instance = new Order deps
+            instance = new Currency deps
             instance.processValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -524,7 +519,7 @@ describe 'The Currency entity,', ->
             expectedMessage.error.fields = 'sec_code_status': 'message': 'Field is invalid'
             inputMessage.data.sec_code_status = {}
             inputMessage.data.token = {}
-            instance = new Order deps
+            instance = new Currency deps
             instance.processValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -533,7 +528,7 @@ describe 'The Currency entity,', ->
             expectedMessage.error.fields = 'sec_code_status': 'message': 'Value is invalid.'
             inputMessage.data.sec_code_status = '5'
             inputMessage.data.token = {}
-            instance = new Order deps
+            instance = new Currency deps
             instance.processValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -542,7 +537,7 @@ describe 'The Currency entity,', ->
             expectedMessage.error.fields = 'sec_code_status': 'message': 'Value is invalid.'
             inputMessage.data.sec_code_status = 5
             inputMessage.data.token = {}
-            instance = new Order deps
+            instance = new Currency deps
             instance.processValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -552,7 +547,7 @@ describe 'The Currency entity,', ->
             inputMessage.data.sec_code_status = 1
             inputMessage.data.security_code = 'A22'
             inputMessage.data.token = {}
-            instance = new Order deps
+            instance = new Currency deps
             instance.processValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -562,7 +557,7 @@ describe 'The Currency entity,', ->
             inputMessage.data.sec_code_status = 1
             inputMessage.data.security_code = {}
             inputMessage.data.token = {}
-            instance = new Order deps
+            instance = new Currency deps
             instance.processValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -571,7 +566,7 @@ describe 'The Currency entity,', ->
             expectedMessage.error.fields = 'security_code': 'message': 'Value does not match the schema.'
             inputMessage.data.security_code = '12345'
             inputMessage.data.token = {}
-            instance = new Order deps
+            instance = new Currency deps
             instance.processValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -580,7 +575,7 @@ describe 'The Currency entity,', ->
             expectedMessage.error.fields = 'security_code': 'message': 'Value does not match the schema.'
             inputMessage.data.security_code = 12
             inputMessage.data.token = {}
-            instance = new Order deps
+            instance = new Currency deps
             instance.processValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -589,7 +584,7 @@ describe 'The Currency entity,', ->
             expectedMessage.error.fields = 'card_holder': 'message': 'Value too long. Check the schema.'
             inputMessage.data.card_holder = new Array(52).join 'i'
             inputMessage.data.token = {}
-            instance = new Order deps
+            instance = new Currency deps
             instance.processValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -597,7 +592,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if token value is too long', (done) ->
             expectedMessage.error.fields = 'token': 'message': 'Value too long. Check the schema.'
             inputMessage.data.token = new Array(102).join 'i'
-            instance = new Order deps
+            instance = new Currency deps
             instance.processValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -605,7 +600,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if token and debit', (done) ->
             expectedMessage.error.fields = 'token': 'message': 'Payment type debit not supported process with token'
             inputMessage.data.payment_type = 'debito'
-            instance = new Order deps
+            instance = new Currency deps
             instance.processValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -613,7 +608,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if payment type is undefined', (done) ->
             expectedMessage.error.fields = 'payment_type': 'message': 'Field is invalid'
             inputMessage.data.payment_type = undefined
-            instance = new Order deps
+            instance = new Currency deps
             instance.processValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -621,7 +616,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if payment type is empty', (done) ->
             expectedMessage.error.fields = 'payment_type': 'message': 'Field is invalid'
             inputMessage.data.payment_type = {}
-            instance = new Order deps
+            instance = new Currency deps
             instance.processValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -629,7 +624,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if payment type is unknown', (done) ->
             expectedMessage.error.fields = 'payment_type': 'message': 'Payment type unknown.'
             inputMessage.data.payment_type = 'not a valid issuer'
-            instance = new Order deps
+            instance = new Currency deps
             instance.processValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -637,7 +632,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if installments is undefined', (done) ->
             expectedMessage.error.fields = 'installments': 'message': 'Field is invalid'
             inputMessage.data.installments = undefined
-            instance = new Order deps
+            instance = new Currency deps
             instance.processValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -645,7 +640,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if installments is empty', (done) ->
             expectedMessage.error.fields = 'installments': 'message': 'Field is invalid'
             inputMessage.data.installments = {}
-            instance = new Order deps
+            instance = new Currency deps
             instance.processValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -654,7 +649,7 @@ describe 'The Currency entity,', ->
             expectedMessage.error.fields = 'installments': 'message': 'The payment type allows only 1 installment.'
             inputMessage.data.payment_type = 'credito_a_vista'
             inputMessage.data.installments = 2
-            instance = new Order deps
+            instance = new Currency deps
             instance.processValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -666,7 +661,7 @@ describe 'The Currency entity,', ->
             inputMessage.data.issuer = 'visa'
             delete inputMessage.data.token
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.processValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -677,7 +672,7 @@ describe 'The Currency entity,', ->
             inputMessage.data.installments = 1
             inputMessage.data.issuer = 'amex'
             delete inputMessage.data.token
-            instance = new Order deps
+            instance = new Currency deps
             instance.processValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -686,7 +681,7 @@ describe 'The Currency entity,', ->
             expectedMessage.error.fields = 'installments': 'message': 'Value exceeds the field limit. Check the schema.'
             inputMessage.data.payment_type = "credito_parcelado_loja"
             inputMessage.data.installments = 9
-            instance = new Order deps
+            instance = new Currency deps
             instance.processValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -717,11 +712,11 @@ describe 'The Currency entity,', ->
             delete expectedMessage.error.fields.auth_token
 
             class Adapter
-                getOrder: (params, callback) ->
+                getCurrency: (params, callback) ->
                     callback success:
                         status: 'CANCELED'
-            deps = {adapters: {Order : Adapter}, tokens: ['token1']}
-            instance = new Order deps
+            deps = {adapters: {Currency : Adapter}, tokens: ['token1']}
+            instance = new Currency deps
             instance.cancelValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -731,11 +726,11 @@ describe 'The Currency entity,', ->
             delete expectedMessage.error.fields.auth_token
 
             class Adapter
-                getOrder: (params, callback) ->
+                getCurrency: (params, callback) ->
                     callback success:
                         status: 'PROCESSING'
-            deps = {adapters: {Order : Adapter}, tokens: ['token1']}
-            instance = new Order deps
+            deps = {adapters: {Currency : Adapter}, tokens: ['token1']}
+            instance = new Currency deps
             instance.cancelValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -746,11 +741,11 @@ describe 'The Currency entity,', ->
             inputMessage.data.auth_token = ''
 
             class Adapter
-                getOrder: (params, callback) ->
+                getCurrency: (params, callback) ->
                     callback()
-            deps = {adapters: {Order : Adapter}, tokens: ['token1']}
+            deps = {adapters: {Currency : Adapter}, tokens: ['token1']}
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.cancelValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -760,11 +755,11 @@ describe 'The Currency entity,', ->
             inputMessage.data.auth_token = undefined
 
             class Adapter
-                getOrder: (params, callback) ->
+                getCurrency: (params, callback) ->
                     callback()
-            deps = {adapters: {Order : Adapter}, tokens: ['token1']}
+            deps = {adapters: {Currency : Adapter}, tokens: ['token1']}
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.cancelValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -774,11 +769,11 @@ describe 'The Currency entity,', ->
             inputMessage.data.auth_token = 'token9999'
 
             class Adapter
-                getOrder: (params, callback) ->
+                getCurrency: (params, callback) ->
                     callback()
-            deps = {adapters: {Order : Adapter}, tokens: ['token1']}
+            deps = {adapters: {Currency : Adapter}, tokens: ['token1']}
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.cancelValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -806,7 +801,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if auth_token is empty', (done) ->
             expectedMessage.error.fields = 'auth_token': 'message': 'Field is invalid'
             inputMessage.data.auth_token = ''
-            instance = new Order deps
+            instance = new Currency deps
             instance.histogramValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -814,7 +809,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if auth_token is undefined', (done) ->
             expectedMessage.error.fields = 'auth_token': 'message': 'Field is invalid'
             delete inputMessage.data.auth_token
-            instance = new Order deps
+            instance = new Currency deps
             instance.histogramValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -822,7 +817,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if auth_token not valid', (done) ->
             expectedMessage.error.fields = 'auth_token': 'message': 'Token unknown.'
             inputMessage.data.auth_token = 'invalid toko'
-            instance = new Order deps
+            instance = new Currency deps
             instance.histogramValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -830,7 +825,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if last_date is empty', (done) ->
             expectedMessage.error.fields = 'last_date': 'message': 'Field is invalid'
             inputMessage.data.last_date = ''
-            instance = new Order deps
+            instance = new Currency deps
             instance.histogramValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -838,7 +833,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if last_date is undefined', (done) ->
             expectedMessage.error.fields = 'last_date': 'message': 'Field is invalid'
             delete inputMessage.data.last_date
-            instance = new Order deps
+            instance = new Currency deps
             instance.histogramValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -846,13 +841,13 @@ describe 'The Currency entity,', ->
         it 'should return an error if last_date is invalid', (done) ->
             expectedMessage.error.fields = 'last_date': 'message': 'Field is invalid'
             inputMessage.data.last_date = 'SOMETHING'
-            instance = new Order deps
+            instance = new Currency deps
             instance.histogramValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
 
         it 'should validate if its fine', (done) ->
-            instance = new Order deps
+            instance = new Currency deps
             instance.histogramValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).not.to.be.ok()
                 done()
@@ -881,7 +876,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if auth_token is empty', (done) ->
             expectedMessage.error.fields = 'auth_token': 'message': 'Field is invalid'
             inputMessage.data.auth_token = ''
-            instance = new Order deps
+            instance = new Currency deps
             instance.statusListValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -889,7 +884,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if auth_token is undefined', (done) ->
             expectedMessage.error.fields = 'auth_token': 'message': 'Field is invalid'
             delete inputMessage.data.auth_token
-            instance = new Order deps
+            instance = new Currency deps
             instance.statusListValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -897,7 +892,7 @@ describe 'The Currency entity,', ->
         it 'should return an error if auth_token not valid', (done) ->
             expectedMessage.error.fields = 'auth_token': 'message': 'Token unknown.'
             inputMessage.data.auth_token = 'invalid toko'
-            instance = new Order deps
+            instance = new Currency deps
             instance.statusListValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -906,7 +901,7 @@ describe 'The Currency entity,', ->
             expectedMessage.error.fields = order_list: message: 'Field is invalid'
 
             inputMessage.data.order_list = undefined
-            instance = new Order deps
+            instance = new Currency deps
             instance.statusListValidation inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedMessage
                 done()
@@ -926,9 +921,9 @@ describe 'The Currency entity,', ->
 
             deps =
                 adapters:
-                    Order: Adapter
+                    Currency: Adapter
                 tokens: ['token1']
-            instance = new Order deps
+            instance = new Currency deps
             instance._getUUID = ->
                 return inputMessage.data.id
             instance.create inputMessage, () ->
@@ -946,14 +941,14 @@ describe 'The Currency entity,', ->
 
             deps =
                 adapters:
-                    Order: Adapter
+                    Currency: Adapter
                 tokens: ['token1']
-            instance = new Order deps
+            instance = new Currency deps
             instance._getUUID = ->
             instance.create outputMessage, ->
                 done()
 
-    describe 'findOrderById()', ->
+    describe 'findCurrencyById()', ->
 
         it 'should return an error if the resource could not be found by its id', (done) ->
 
@@ -961,15 +956,15 @@ describe 'The Currency entity,', ->
                 error: 'NOT_FOUND'
 
             class Adapter
-                findOrderById: (id, callback) ->
+                findCurrencyById: (id, callback) ->
                     callback error: 'NOT_FOUND'
 
             deps =
                 adapters:
-                    Order: Adapter
+                    Currency: Adapter
                 tokens: ['token1']
-            instance = new Order deps
-            instance.findOrderById 1, (outputMessage) ->
+            instance = new Currency deps
+            instance.findCurrencyById 1, (outputMessage) ->
                 expect(outputMessage).to.eql expectedOutputMessage
                 done()
 
@@ -982,18 +977,18 @@ describe 'The Currency entity,', ->
                     description: 'some cool stuff'
 
             class Adapter
-                findOrderById: (id, callback) ->
+                findCurrencyById: (id, callback) ->
                     callback expectedOutputMessage
             deps =
                 adapters:
-                    Order: Adapter
+                    Currency: Adapter
                 tokens: ['token1']
-            instance = new Order deps
-            instance.findOrderById 1, (outputMessage) ->
+            instance = new Currency deps
+            instance.findCurrencyById 1, (outputMessage) ->
                 expect(outputMessage).to.eql expectedOutputMessage
                 done()
 
-    describe 'getOrder()', ->
+    describe 'getCurrency()', ->
 
         inputMessage = null
 
@@ -1005,7 +1000,7 @@ describe 'The Currency entity,', ->
                     field: 'id'
                     value: '1'
 
-        it 'should call adapter.getOrder with auth_token, value and field is ID', (done) ->
+        it 'should call adapter.getCurrency with auth_token, value and field is ID', (done) ->
 
             expectedInputMessage =
                 domain: 'pay'
@@ -1016,19 +1011,19 @@ describe 'The Currency entity,', ->
                     value: inputMessage.data.value
 
             MockAdapter = ->
-                getOrder: (inputMessage, callback) ->
+                getCurrency: (inputMessage, callback) ->
                     expect(inputMessage).to.eql expectedInputMessage
                     done()
 
             deps =
                 tokens: ['token1']
                 adapters:
-                    Order: MockAdapter
+                    Currency: MockAdapter
 
-            instance = new Order deps
-            instance.getOrder inputMessage, ->
+            instance = new Currency deps
+            instance.getCurrency inputMessage, ->
 
-        it 'should call adapter.getOrder with auth_token, value and field is REFERENCE', (done) ->
+        it 'should call adapter.getCurrency with auth_token, value and field is REFERENCE', (done) ->
 
             inputMessage.data.field = 'reference'
 
@@ -1041,17 +1036,17 @@ describe 'The Currency entity,', ->
                     value: inputMessage.data.value
 
             MockAdapter = ->
-                getOrder: (inputMessage, callback) ->
+                getCurrency: (inputMessage, callback) ->
                     expect(inputMessage).to.eql expectedInputMessage
                     done()
 
             deps =
                 tokens: ['token1']
                 adapters:
-                    Order: MockAdapter
+                    Currency: MockAdapter
 
-            instance = new Order deps
-            instance.getOrder inputMessage, ->
+            instance = new Currency deps
+            instance.getCurrency inputMessage, ->
 
         it 'should return an error if the resource could not be found by its id', (done) ->
 
@@ -1059,15 +1054,15 @@ describe 'The Currency entity,', ->
                 error: 'NOT_FOUND'
 
             class Adapter
-                getOrder: (id, callback) ->
+                getCurrency: (id, callback) ->
                     callback error: 'NOT_FOUND'
 
             deps =
                 adapters:
-                    Order: Adapter
+                    Currency: Adapter
                 tokens: ['token1']
-            instance = new Order deps
-            instance.getOrder inputMessage, (outputMessage) ->
+            instance = new Currency deps
+            instance.getCurrency inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedOutputMessage
                 done()
 
@@ -1080,14 +1075,14 @@ describe 'The Currency entity,', ->
                     description: 'some cool stuff'
 
             class Adapter
-                getOrder: (id, callback) ->
+                getCurrency: (id, callback) ->
                     callback expectedOutputMessage
             deps =
                 adapters:
-                    Order: Adapter
+                    Currency: Adapter
                 tokens: ['token1']
-            instance = new Order deps
-            instance.getOrder inputMessage, (outputMessage) ->
+            instance = new Currency deps
+            instance.getCurrency inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedOutputMessage
                 done()
 
@@ -1120,9 +1115,9 @@ describe 'The Currency entity,', ->
             deps =
                 tokens: ['token1']
                 adapters:
-                    Order: MockAdapter
+                    Currency: MockAdapter
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.getToken defaultInputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedOutputMessage
                 done()
@@ -1141,9 +1136,9 @@ describe 'The Currency entity,', ->
             deps =
                 tokens: ['token1']
                 adapters:
-                    Order: MockAdapter
+                    Currency: MockAdapter
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.getToken defaultInputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedOutputMessage
                 done()
@@ -1164,9 +1159,9 @@ describe 'The Currency entity,', ->
             deps =
                 tokens: ['token1']
                 adapters:
-                    Order: MockAdapter
+                    Currency: MockAdapter
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.getToken defaultInputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedOutputMessage
                 done()
@@ -1189,9 +1184,9 @@ describe 'The Currency entity,', ->
             deps =
                 tokens: ['token1']
                 adapters:
-                    Order: MockAdapter
+                    Currency: MockAdapter
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.getToken defaultInputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedOutputMessage
                 done()
@@ -1219,9 +1214,9 @@ describe 'The Currency entity,', ->
             deps =
                 tokens: ['token1']
                 adapters:
-                    Order: MockAdapter
+                    Currency: MockAdapter
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.getToken defaultInputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedOutputMessage
                 done()
@@ -1246,9 +1241,9 @@ describe 'The Currency entity,', ->
             deps =
                 tokens: ['token1']
                 adapters:
-                    Order: MockAdapter
+                    Currency: MockAdapter
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.getToken defaultInputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedOutputMessage
                 done()
@@ -1275,9 +1270,9 @@ describe 'The Currency entity,', ->
             deps =
                 tokens: ['token1']
                 adapters:
-                    Order: MockAdapter
+                    Currency: MockAdapter
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.getToken defaultInputMessage, (outputMessage)->
                 expect(outputMessage).to.eql expectedOutputMessage
                 done()
@@ -1301,9 +1296,9 @@ describe 'The Currency entity,', ->
             deps =
                 tokens: ['token1']
                 adapters:
-                    Order: MockAdapter
+                    Currency: MockAdapter
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.getToken defaultInputMessage, (outputMessage)->
                 expect(outputMessage).to.be.ok
                 done()
@@ -1331,9 +1326,9 @@ describe 'The Currency entity,', ->
             deps =
                 tokens: ['token1']
                 adapters:
-                    Order: MockAdapter
+                    Currency: MockAdapter
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.getToken defaultInputMessage, (outputMessage)->
                 expect(outputMessage).to.eql expectedOutputMessage
                 done()
@@ -1359,9 +1354,9 @@ describe 'The Currency entity,', ->
             deps =
                 tokens: ['token1']
                 adapters:
-                    Order: MockAdapter
+                    Currency: MockAdapter
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.synchronizeStatus defaultInputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedOutputMessage
                 done()
@@ -1380,9 +1375,9 @@ describe 'The Currency entity,', ->
             deps =
                 tokens: ['token1']
                 adapters:
-                    Order: MockAdapter
+                    Currency: MockAdapter
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.synchronizeStatus defaultInputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedOutputMessage
                 done()
@@ -1403,9 +1398,9 @@ describe 'The Currency entity,', ->
             deps =
                 tokens: ['token1']
                 adapters:
-                    Order: MockAdapter
+                    Currency: MockAdapter
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.synchronizeStatus defaultInputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedOutputMessage
                 done()
@@ -1428,9 +1423,9 @@ describe 'The Currency entity,', ->
             deps =
                 tokens: ['token1']
                 adapters:
-                    Order: MockAdapter
+                    Currency: MockAdapter
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.synchronizeStatus defaultInputMessage, (outputMessage)->
                 expect(outputMessage).to.eql expectedOutputMessage
                 done()
@@ -1454,9 +1449,9 @@ describe 'The Currency entity,', ->
             deps =
                 tokens: ['token1']
                 adapters:
-                    Order: MockAdapter
+                    Currency: MockAdapter
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.synchronizeStatus defaultInputMessage, (outputMessage)->
                 expect(outputMessage.success.status).to.eql expectedOutputMessage.success.status
                 expect(outputMessage.success.synchronizeRequestData).to.be.ok()
@@ -1479,14 +1474,14 @@ describe 'The Currency entity,', ->
                     format: (format) ->
                         'hoje'
             class MockAdapter
-                createOrderStatus: (inputMessage, callback) ->
+                createCurrencyStatus: (inputMessage, callback) ->
                     expect(inputMessage).to.eql expectedInputMessage
                     done()
 
             deps =
                 moment: MockMoment
                 adapters:
-                    Order: MockAdapter
+                    Currency: MockAdapter
                 tokens: ['token1']
 
             inputMessage =
@@ -1494,7 +1489,7 @@ describe 'The Currency entity,', ->
                     order_id: expectedInputMessage.data.order_id
                     status: expectedInputMessage.data.status
 
-            instance = new Order deps
+            instance = new Currency deps
             instance._getUUID = ->
                 return '321321'
             instance.updateStatus inputMessage, ->
@@ -1537,18 +1532,18 @@ describe 'The Currency entity,', ->
                 expectedError =
                     error: 'Internal Error'
 
-                class MockOrderAdapter
+                class MockCurrencyAdapter
                     getDataTransaction: (inputMessage, callback) ->
                         callback expectedError
 
                 deps =
                     adapters:
-                        Order: MockOrderAdapter
+                        Currency: MockCurrencyAdapter
                     tokens: ['token1']
                     ip:
                         address: (callback) ->
                             callback 'localhost'
-                instance = new Order deps
+                instance = new Currency deps
                 instance.process inputMessage, (outputMessage) ->
                     expect(outputMessage).to.eql expectedError
                     done()
@@ -1575,7 +1570,7 @@ describe 'The Currency entity,', ->
                 expectedError =
                     error: 'Internal Error'
 
-                class MockOrderAdapter
+                class MockCurrencyAdapter
                     getDataTransaction: (inputMessage, callback) ->
                         callback defaultMockGetDataTransaction
                     saveTransaction: (inputMessage, callback) ->
@@ -1583,12 +1578,12 @@ describe 'The Currency entity,', ->
 
                 deps =
                     adapters:
-                        Order: MockOrderAdapter
+                        Currency: MockCurrencyAdapter
                     tokens: ['token1']
                     ip:
                         address: (callback) ->
                             callback 'localhost'
-                instance = new Order deps
+                instance = new Currency deps
                 instance.process inputMessage, (outputMessage) ->
                     expect(outputMessage).to.eql expectedError
                     done()
@@ -1617,7 +1612,7 @@ describe 'The Currency entity,', ->
 
                 cont = 1
 
-                class MockOrderAdapter
+                class MockCurrencyAdapter
                     getDataTransaction: (inputMessage, callback) ->
                         callback defaultMockGetDataTransaction
                     saveTransaction: (inputMessage, callback) ->
@@ -1631,12 +1626,12 @@ describe 'The Currency entity,', ->
 
                 deps =
                     adapters:
-                        Order: MockOrderAdapter
+                        Currency: MockCurrencyAdapter
                     tokens: ['token1']
                     ip:
                         address: (callback) ->
                             callback 'localhost'
-                instance = new Order deps
+                instance = new Currency deps
                 instance.process inputMessage, (outputMessage) ->
                     expect(outputMessage).to.eql expectedError
                     done()
@@ -1665,7 +1660,7 @@ describe 'The Currency entity,', ->
 
                 cont = 1
 
-                class MockOrderAdapter
+                class MockCurrencyAdapter
                     getDataTransaction: (inputMessage, callback) ->
                         callback defaultMockGetDataTransaction
                     saveTransaction: (inputMessage, callback) ->
@@ -1679,12 +1674,12 @@ describe 'The Currency entity,', ->
 
                 deps =
                     adapters:
-                        Order: MockOrderAdapter
+                        Currency: MockCurrencyAdapter
                     tokens: ['token1']
                     ip:
                         address: (callback) ->
                             callback 'localhost'
-                instance = new Order deps
+                instance = new Currency deps
                 instance.process inputMessage, (outputMessage) ->
                     expect(outputMessage).to.eql expectedError
                     done()
@@ -1711,7 +1706,7 @@ describe 'The Currency entity,', ->
                 expectedError =
                     error: 'Internal Error'
 
-                class MockOrderAdapter
+                class MockCurrencyAdapter
                     getDataTransaction: (inputMessage, callback) ->
                         callback defaultMockGetDataTransaction
                     saveTransaction: (inputMessage, callback) ->
@@ -1723,12 +1718,12 @@ describe 'The Currency entity,', ->
 
                 deps =
                     adapters:
-                        Order: MockOrderAdapter
+                        Currency: MockCurrencyAdapter
                     tokens: ['token1']
                     ip:
                         address: (callback) ->
                             callback 'localhost'
-                instance = new Order deps
+                instance = new Currency deps
                 instance.process inputMessage, (outputMessage) ->
                     expect(outputMessage).to.eql expectedError
                     done()
@@ -1766,12 +1761,12 @@ describe 'The Currency entity,', ->
 
                 deps =
                     adapters:
-                        Order: Adapter
+                        Currency: Adapter
                     tokens: ['token1']
                     ip:
                         address: (callback) ->
                             callback 'localhost'
-                instance = new Order deps
+                instance = new Currency deps
                 instance.process inputMessage, (outputMessage) ->
                     expect(outputMessage).to.eql expectedOutputMessage
                     done()
@@ -1811,12 +1806,12 @@ describe 'The Currency entity,', ->
 
                 deps =
                     adapters:
-                        Order: Adapter
+                        Currency: Adapter
                     tokens: ['token1']
                     ip:
                         address: (callback) ->
                             callback 'localhost'
-                instance = new Order deps
+                instance = new Currency deps
                 instance.process inputMessage, (outputMessage) ->
                     expect(outputMessage).to.eql expectedOutputMessage
                     done()
@@ -1875,12 +1870,12 @@ describe 'The Currency entity,', ->
 
                 deps =
                     adapters:
-                        Order: Adapter
+                        Currency: Adapter
                     tokens: ['token1']
                     ip:
                         address: (callback) ->
                             callback 'localhost'
-                instance = new Order deps
+                instance = new Currency deps
                 instance.process inputMessage, (outputMessage) ->
                     expect(outputMessage).to.eql expectedOutputMessage
                     done()
@@ -1925,12 +1920,12 @@ describe 'The Currency entity,', ->
 
                 deps =
                     adapters:
-                        Order: Adapter
+                        Currency: Adapter
                     tokens: ['token1']
                     ip:
                         address: (callback) ->
                             callback 'localhost'
-                instance = new Order deps
+                instance = new Currency deps
                 instance.process inputMessage, (outputMessage) ->
                     expect(outputMessage).to.eql expectedOutputMessage
                     done()
@@ -1982,9 +1977,9 @@ describe 'The Currency entity,', ->
 
                 deps =
                     adapters:
-                        Order: Adapter
+                        Currency: Adapter
                     tokens: ['token1']
-                instance = new Order deps
+                instance = new Currency deps
                 instance.process inputMessage, (outputMessage) ->
                     expect(outputMessage).to.eql expectedOutputMessage
                     done()
@@ -2021,12 +2016,12 @@ describe 'The Currency entity,', ->
 
                 deps =
                     adapters:
-                        Order: Adapter
+                        Currency: Adapter
                     tokens: ['token1']
                     ip:
                         address: (callback) ->
                             callback 'localhost'
-                instance = new Order deps
+                instance = new Currency deps
                 instance.process inputMessage, () ->
 
             it 'should set authorize to NO_AUTHENTICATION if the token is sent and the issuer is not mastercard or visa', (done) ->
@@ -2055,12 +2050,12 @@ describe 'The Currency entity,', ->
 
                 deps =
                     adapters:
-                        Order: Adapter
+                        Currency: Adapter
                     tokens: ['token1']
                     ip:
                         address: (callback) ->
                             callback 'localhost'
-                instance = new Order deps
+                instance = new Currency deps
                 instance.process inputMessage, () ->
 
             it 'should set authorize to NO_AUTHENTICATION if the token is sent and the issuer is mastercard', (done) ->
@@ -2089,12 +2084,12 @@ describe 'The Currency entity,', ->
 
                 deps =
                     adapters:
-                        Order: Adapter
+                        Currency: Adapter
                     tokens: ['token1']
                     ip:
                         address: (callback) ->
                             callback 'localhost'
-                instance = new Order deps
+                instance = new Currency deps
                 instance.process inputMessage, () ->
 
             it 'should set authorize to NO_AUTHENTICATION if the token is sent and the issuer is visa', (done) ->
@@ -2123,12 +2118,12 @@ describe 'The Currency entity,', ->
 
                 deps =
                     adapters:
-                        Order: Adapter
+                        Currency: Adapter
                     tokens: ['token1']
                     ip:
                         address: (callback) ->
                             callback 'localhost'
-                instance = new Order deps
+                instance = new Currency deps
                 instance.process inputMessage, () ->
 
             it 'should set authorize to MAYBE_AUTHENTICATE if issuer is visa and no token is sent', (done) ->
@@ -2162,12 +2157,12 @@ describe 'The Currency entity,', ->
 
                 deps =
                     adapters:
-                        Order: Adapter
+                        Currency: Adapter
                     tokens: ['token1']
                     ip:
                         address: (callback) ->
                             callback 'localhost'
-                instance = new Order deps
+                instance = new Currency deps
                 instance.process inputMessage, () ->
 
             it 'should set authorize to NO_AUTHENTICATION if noAuthentication field is set', (done) ->
@@ -2202,12 +2197,12 @@ describe 'The Currency entity,', ->
 
                 deps =
                     adapters:
-                        Order: Adapter
+                        Currency: Adapter
                     tokens: ['token1']
                     ip:
                         address: (callback) ->
                             callback 'localhost'
-                instance = new Order deps
+                instance = new Currency deps
                 instance.process inputMessage, () ->
 
             it 'should set authorize to MAYBE_AUTHENTICATE if issuer is mastercard and no token is sent', (done) ->
@@ -2241,12 +2236,12 @@ describe 'The Currency entity,', ->
 
                 deps =
                     adapters:
-                        Order: Adapter
+                        Currency: Adapter
                     tokens: ['token1']
                     ip:
                         address: (callback) ->
                             callback 'localhost'
-                instance = new Order deps
+                instance = new Currency deps
                 instance.process inputMessage, () ->
 
         describe 'ok', ->
@@ -2289,19 +2284,19 @@ describe 'The Currency entity,', ->
 
                 deps =
                     adapters:
-                        Order: Adapter
+                        Currency: Adapter
                     tokens: ['token1']
                     ip:
                         address: (callback) ->
                             callback 'localhost'
-                instance = new Order deps
+                instance = new Currency deps
                 instance.process inputMessage, (outputMessage) ->
                     expect(outputMessage).to.eql expectedOutputMessage
                     done()
 
-    describe 'updateOrderInfo', ->
+    describe 'updateCurrencyInfo', ->
 
-        it 'should called updateOrderInfo expected error return status',(done) ->
+        it 'should called updateCurrencyInfo expected error return status',(done) ->
 
             expectedOutputMessage =
                 error: 'error status'
@@ -2315,15 +2310,15 @@ describe 'The Currency entity,', ->
             deps =
                 tokens: ['token1']
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.updateStatus = (inputMessage, callback) ->
                 callback expectedOutputMessage
 
-            instance.updateOrderInfo inputMessage, (outputMessage) ->
+            instance.updateCurrencyInfo inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedOutputMessage
                 done()
 
-        it 'should called updateOrderInfo expected error',(done) ->
+        it 'should called updateCurrencyInfo expected error',(done) ->
 
             expectedOutputMessage =
                 error: 'error'
@@ -2335,23 +2330,23 @@ describe 'The Currency entity,', ->
                     update_data: {}
 
             class MockUpdateById
-                updateOrderById: (order_id, tid, callback) ->
+                updateCurrencyById: (order_id, tid, callback) ->
                     callback expectedOutputMessage
 
             deps =
                 adapters:
-                    Order: MockUpdateById
+                    Currency: MockUpdateById
                 tokens: ['token1']
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.updateStatus = (inputMessage, callback) ->
                 callback()
 
-            instance.updateOrderInfo inputMessage, (outputMessage) ->
+            instance.updateCurrencyInfo inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedOutputMessage
                 done()
 
-        it 'should called updateOrderInfo expected success',(done) ->
+        it 'should called updateCurrencyInfo expected success',(done) ->
 
             inputMessage =
                 data:
@@ -2360,25 +2355,25 @@ describe 'The Currency entity,', ->
                     update_data: {}
 
             class MockUpdateById
-                updateOrderById: (order_id, tid, callback) ->
+                updateCurrencyById: (order_id, tid, callback) ->
                     callback()
 
             deps =
                 adapters:
-                    Order: MockUpdateById
+                    Currency: MockUpdateById
                 tokens: ['token1']
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.updateStatus = (inputMessage, callback) ->
                 callback()
 
-            instance.updateOrderInfo inputMessage, (outputMessage) ->
+            instance.updateCurrencyInfo inputMessage, (outputMessage) ->
                 expect(outputMessage).not.to.be.ok
                 done()
 
-    describe 'updateOrderById', ->
+    describe 'updateCurrencyById', ->
 
-        it 'should called updateOrderById expected error',(done) ->
+        it 'should called updateCurrencyById expected error',(done) ->
 
             expectedOutputMessage =
                 error: 'error'
@@ -2391,20 +2386,20 @@ describe 'The Currency entity,', ->
                 status: 'PROCESSING'
 
             class MockUpdateById
-                updateOrderById: (order_id, tid, callback) ->
+                updateCurrencyById: (order_id, tid, callback) ->
                     callback expectedOutputMessage
 
             deps =
                 adapters:
-                    Order: MockUpdateById
+                    Currency: MockUpdateById
                 tokens: ['token1']
 
-            instance = new Order deps
-            instance.updateOrderById inputMessage, inputMessageData, (outputMessage) ->
+            instance = new Currency deps
+            instance.updateCurrencyById inputMessage, inputMessageData, (outputMessage) ->
                 expect(outputMessage).to.eql expectedOutputMessage
                 done()
 
-        it 'should called updateOrderInfo expected success',(done) ->
+        it 'should called updateCurrencyInfo expected success',(done) ->
 
             inputMessage =
                 data:
@@ -2414,16 +2409,16 @@ describe 'The Currency entity,', ->
                 status: 'PROCESSING'
 
             class MockUpdateById
-                updateOrderById: (order_id, tid, callback) ->
+                updateCurrencyById: (order_id, tid, callback) ->
                     callback()
 
             deps =
                 adapters:
-                    Order: MockUpdateById
+                    Currency: MockUpdateById
                 tokens: ['token1']
 
-            instance = new Order deps
-            instance.updateOrderById inputMessage, inputMessageData, (outputMessage) ->
+            instance = new Currency deps
+            instance.updateCurrencyById inputMessage, inputMessageData, (outputMessage) ->
                 expect(outputMessage).to.be.ok
                 done()
 
@@ -2448,9 +2443,9 @@ describe 'The Currency entity,', ->
             deps =
                 tokens: ['token1']
                 adapters:
-                    Order: MockAdapter
+                    Currency: MockAdapter
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.cancel inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedOutputMessage
                 done()
@@ -2469,9 +2464,9 @@ describe 'The Currency entity,', ->
             deps =
                 tokens: ['token1']
                 adapters:
-                    Order: MockAdapter
+                    Currency: MockAdapter
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.cancel inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedOutputMessage
                 done()
@@ -2523,7 +2518,7 @@ describe 'The Currency entity,', ->
                         else
                             expect(inputMessageSaveTransaction).to.eql expectedInputMessage
                             done()
-                    cancelOrder: (inputMessage, callback) ->
+                    cancelCurrency: (inputMessage, callback) ->
                         callback expectedOutputMessage
 
                 class MockUUID
@@ -2533,7 +2528,7 @@ describe 'The Currency entity,', ->
                 deps =
                     uuid: MockUUID
                     adapters:
-                        Order: Adapter
+                        Currency: Adapter
                     tokens: ['token1']
                     moment:
                         utc: (object) ->
@@ -2541,7 +2536,7 @@ describe 'The Currency entity,', ->
                                 format: () ->
                                     '2015-01-01T00:00:00'
 
-                instance = new Order deps
+                instance = new Currency deps
                 instance.cancel inputMessage, (outputMessage) ->
                     expect(outputMessage).to.eql expectedOutputMessage
                     done()
@@ -2577,7 +2572,7 @@ describe 'The Currency entity,', ->
                         else
                             expect(inputMessageSaveTransaction).to.eql expectedInputMessage
                             done()
-                    cancelOrder: (inputMessage, callback) ->
+                    cancelCurrency: (inputMessage, callback) ->
                         callback outputMessage
                 class MockUUID
                     @v4: ->
@@ -2592,9 +2587,9 @@ describe 'The Currency entity,', ->
                                 format: () ->
                                     '2015-01-01T00:00:00'
                     adapters:
-                        Order: MockAdapter
+                        Currency: MockAdapter
 
-                instance = new Order deps
+                instance = new Currency deps
                 instance.cancel inputMessage, ->
 
             it 'deverá receber um erro caso for enviado um token inválido para autorizadora', (done) ->
@@ -2618,15 +2613,15 @@ describe 'The Currency entity,', ->
                         callback success: xml_log : '<xml>XML SEND AUTORIZADORA</xml>'
                     saveTransaction: (inputMessage, callback) ->
                         callback()
-                    cancelOrder: (inputMessage, callback) ->
+                    cancelCurrency: (inputMessage, callback) ->
                         callback outputTransactionMessage
 
                 deps =
                     tokens: ['token1']
                     adapters:
-                        Order: MockAdapter
+                        Currency: MockAdapter
 
-                instance = new Order deps
+                instance = new Currency deps
                 instance.cancel inputMessage, (outputMessage) ->
                     expect(outputMessage).to.eql expectedOutputMessage
                     done()
@@ -2646,15 +2641,15 @@ describe 'The Currency entity,', ->
                         callback()
                     else
                         callback expectedOutputMessage
-                cancelOrder: (inputMessage, callback) ->
+                cancelCurrency: (inputMessage, callback) ->
                     callback success: xml : '<xml>XML RESPONSE AUTORIZADORA</xml>'
 
             deps =
                 tokens: ['token1']
                 adapters:
-                    Order: MockAdapter
+                    Currency: MockAdapter
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.cancel inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedOutputMessage
                 done()
@@ -2678,17 +2673,17 @@ describe 'The Currency entity,', ->
                     callback success: xml_log : '<xml>XML SEND AUTORIZADORA</xml>'
                 saveTransaction: (inputMessage, callback) ->
                     callback()
-                cancelOrder: (inputMessage, callback) ->
+                cancelCurrency: (inputMessage, callback) ->
                     callback outputTransactionMessage
-                createOrderStatus: (inputMessage, callback) ->
+                createCurrencyStatus: (inputMessage, callback) ->
                     callback expectedOutputMessage
 
             deps =
                 tokens: ['token1']
                 adapters:
-                    Order: MockAdapter
+                    Currency: MockAdapter
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.cancel inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedOutputMessage
                 done()
@@ -2714,17 +2709,17 @@ describe 'The Currency entity,', ->
                     callback success: xml_log : '<xml>XML SEND AUTORIZADORA</xml>'
                 saveTransaction: (inputMessage, callback) ->
                     callback()
-                cancelOrder: (inputMessage, callback) ->
+                cancelCurrency: (inputMessage, callback) ->
                     callback outputTransactionMessage
-                createOrderStatus: (inputMessage, callback) ->
+                createCurrencyStatus: (inputMessage, callback) ->
                     callback()
 
             deps =
                 tokens: ['token1']
                 adapters:
-                    Order: MockAdapter
+                    Currency: MockAdapter
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.cancel inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedOutputMessage
                 done()
@@ -2733,7 +2728,7 @@ describe 'The Currency entity,', ->
 
             changeDate = '2015-01-01 00:00:00'
 
-            expectedOrderStatus =
+            expectedCurrencyStatus =
                 data:
                     order_id: inputMessage.data.order_id
                     status: 'REFUNDED'
@@ -2745,12 +2740,12 @@ describe 'The Currency entity,', ->
                     callback success: xml_log : '<xml>XML SEND AUTORIZADORA</xml>'
                 saveTransaction: (inputMessage, callback) ->
                     callback()
-                cancelOrder: (inputMessage, callback) ->
+                cancelCurrency: (inputMessage, callback) ->
                     callback success: xml : '<xml>XML RESPONSE AUTORIZADORA</xml>'
                 convertCieloResponseToJSON: (inputMessage, callback) ->
                     callback()
-                createOrderStatus: (inputMessage, callback) ->
-                    expect(inputMessage).to.eql expectedOrderStatus
+                createCurrencyStatus: (inputMessage, callback) ->
+                    expect(inputMessage).to.eql expectedCurrencyStatus
                     callback()
 
             class MockMoment
@@ -2762,9 +2757,9 @@ describe 'The Currency entity,', ->
                 tokens: ['token1']
                 moment: MockMoment
                 adapters:
-                    Order: MockAdapter
+                    Currency: MockAdapter
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.cancel inputMessage, (outputMessage) ->
                 expect(outputMessage).not.to.be.ok()
                 done()
@@ -2793,9 +2788,9 @@ describe 'The Currency entity,', ->
             deps =
                 tokens: ['token1']
                 adapters:
-                    Order: MockAdapter
+                    Currency: MockAdapter
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.applyTax inputMessage, ->
 
         it 'should return an error if getContract failed', (done)->
@@ -2810,9 +2805,9 @@ describe 'The Currency entity,', ->
             deps =
                 tokens: ['token1']
                 adapters:
-                    Order: MockAdapter
+                    Currency: MockAdapter
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.applyTax inputMessage, (outputMessage)->
                 expect(outputMessage).to.eql expectedOutputMessage
                 done()
@@ -2838,9 +2833,9 @@ describe 'The Currency entity,', ->
             deps =
                 tokens: ['token1']
                 adapters:
-                    Order: MockAdapter
+                    Currency: MockAdapter
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.applyTax inputMessage, (outputMessage)->
                 expect(outputMessage).to.eql expectedOutputMessage
                 done()
@@ -2866,9 +2861,9 @@ describe 'The Currency entity,', ->
             deps =
                 tokens: ['token1']
                 adapters:
-                    Order: MockAdapter
+                    Currency: MockAdapter
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.applyTax inputMessage, (outputMessage)->
                 expect(outputMessage).to.eql expectedOutputMessage
                 done()
@@ -2894,9 +2889,9 @@ describe 'The Currency entity,', ->
             deps =
                 tokens: ['token1']
                 adapters:
-                    Order: MockAdapter
+                    Currency: MockAdapter
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.applyTax inputMessage, (outputMessage)->
                 expect(outputMessage).to.eql expectedOutputMessage
                 done()
@@ -2918,7 +2913,7 @@ describe 'The Currency entity,', ->
 
             deps =
                 adapters:
-                    Order: MockAdapter
+                    Currency: MockAdapter
                 tokens: ['token1']
 
             inputMessage =
@@ -2926,7 +2921,7 @@ describe 'The Currency entity,', ->
                     auth_token: expectedInputMessage.data.auth_token
                     last_date: expectedInputMessage.data.change_date
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.authorizedAmountPerDay inputMessage, ->
 
     describe 'refundedAmountPerDay', ->
@@ -2946,7 +2941,7 @@ describe 'The Currency entity,', ->
 
             deps =
                 adapters:
-                    Order: MockAdapter
+                    Currency: MockAdapter
                 tokens: ['token1']
 
             inputMessage =
@@ -2954,7 +2949,7 @@ describe 'The Currency entity,', ->
                     auth_token: expectedInputMessage.data.auth_token
                     last_date: expectedInputMessage.data.change_date
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.refundedAmountPerDay inputMessage, ->
 
     describe 'saveTransaction', ->
@@ -2971,14 +2966,14 @@ describe 'The Currency entity,', ->
 
             deps =
                 adapters:
-                    Order: MockAdapter
+                    Currency: MockAdapter
                 tokens: ['token1']
 
             inputMessage =
                 data:
                     some: 'object'
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.saveTransaction inputMessage, ->
 
     describe 'statusList()', ->
@@ -3011,9 +3006,9 @@ describe 'The Currency entity,', ->
 
             deps =
                 adapters:
-                    Order: MockAdapter
+                    Currency: MockAdapter
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.statusList inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedOutput
                 done()
@@ -3029,9 +3024,9 @@ describe 'The Currency entity,', ->
 
             deps =
                 adapters:
-                    Order: MockAdapter
+                    Currency: MockAdapter
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.statusList inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedOutput
                 done()
@@ -3056,9 +3051,9 @@ describe 'The Currency entity,', ->
 
             deps =
                 adapters:
-                    Order: MockAdapter
+                    Currency: MockAdapter
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.statusList inputMessage, (outputMessage) ->
                 expect(outputMessage).to.eql expectedOutput
                 done()
@@ -3083,9 +3078,9 @@ describe 'The Currency entity,', ->
 
             deps =
                 adapters:
-                    Order: MockAdapter
+                    Currency: MockAdapter
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.getProcessable (outputMessage) ->
                 expect(outputMessage).to.eql expectedOutput
                 done()
@@ -3101,9 +3096,9 @@ describe 'The Currency entity,', ->
 
             deps =
                 adapters:
-                    Order: MockAdapter
+                    Currency: MockAdapter
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.getProcessable (outputMessage) ->
                 expect(outputMessage).to.eql expectedOutput
                 done()
@@ -3128,9 +3123,9 @@ describe 'The Currency entity,', ->
 
             deps =
                 adapters:
-                    Order: MockAdapter
+                    Currency: MockAdapter
 
-            instance = new Order deps
+            instance = new Currency deps
             instance.getProcessable (outputMessage) ->
                 expect(outputMessage).to.eql expectedOutput
                 done()
