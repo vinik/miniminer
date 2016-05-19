@@ -49,18 +49,21 @@ class CurrencyInteractor
     getMostProfitableToMine: (callback) ->
 
         request = require('request');
+        lodash = require('lodash')
         request(@hosts.coinmarketcap.url + "ticker", (error, response, body)->
             #console.log(body)
 
             json = JSON.parse body
-            console.log json[0].id
+            #console.log json[0].id
 
+            listOrdered = lodash.orderBy(json, ['percent_change_1h'], ['desc'])
+            #console.log listOrdered
 
             first = null
             last = null
             list = [0, 1, 2, 3, 4]
             list2 = list
-            list2[item] = json[item].id for item in list
+            list2[item] = listOrdered[item].id for item in list
 
             callback list2
         )

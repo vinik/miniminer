@@ -37,6 +37,7 @@
     "coinbase-service": "^1.0.4",
     "coindust": "^0.3.5",
     "json": "^9.0.3",
+    "lodash": "^4.12.0",
     "query-string": "^3.0.0",
     "request": "^2.72.0",
     "restwork": "git://github.com/s2way/restwork.git",
