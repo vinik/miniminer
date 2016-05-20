@@ -4,7 +4,7 @@ class ForemanTask
 
     name: 'ForemanTask'
     interval: 60 * 60 * 1000
-    # interval: 10 * 60 * 1000
+    interval: 15 * 1000
     litecoins: 0.01
 
     constructor: (deps) ->
@@ -13,14 +13,22 @@ class ForemanTask
         @logger.log 'info', "[ForemanTask]"
 
     run: (emitter) ->
+        _ = require 'lodash'
         @logger.log 'info', "[ForemanTask] Ok Master, let me see what are the most profitable coins to mine."
 
         interactor = new @Interactor
-        interactor.getMostProfitableToMine (outputMessage) ->
-            return emitter.emit 'error' if outputMessage is 'error'
+        interactor.getMostProfitableToMine (topFive) ->
+            return emitter.emit 'error' if topFive is 'error'
 
-            console.log 'info', "[ForemanTask] Master, I want to mine " + outputMessage
+            _.forEach topFive, (item)->
+                console.log item
+
+
             emitter.emit 'success'
+
+            #console.log 'info', "[ForemanTask] Master, I want to mine " + topFive
+
+
 
 
     stop: ->
