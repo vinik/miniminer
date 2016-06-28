@@ -1,0 +1,4 @@
+module.exports =
+    poloniex:
+        api_key: ''
+        secret_key: ''

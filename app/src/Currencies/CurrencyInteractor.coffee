@@ -68,7 +68,28 @@ class CurrencyInteractor
             callback list2
         )
 
-    #getTop: (top, callback)
+
+    getTop: (callback) ->
+
+        request = require('request');
+        _ = require('lodash')
+        request(@hosts.coinmarketcap.url + "ticker", (error, response, body)->
+            #console.log(body)
+
+            json = JSON.parse body
+            #console.log json[0].id
+
+            filteredList = _.filter json, (filtered)->
+                return filtered.percent_change_1h? and filtered.rank < 100
+
+            #console.log orderedList
+            orderedList = _.orderBy filteredList, ['percent_change_1h'], ['desc']
+
+            list2 = []
+            list2[index] = orderedList[index] for index in [0..1]
+
+            callback list2
+        )
 
     _log: (msg) ->
         console.log msg

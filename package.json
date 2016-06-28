@@ -41,6 +41,7 @@
     "query-string": "^3.0.0",
     "request": "^2.72.0",
     "restwork": "git://github.com/s2way/restwork.git",
+    "sha512": "0.0.1",
     "waferpie-utils": "git://github.com/s2way/waferpie-utils.git",
     "winston": "^2.2.0",
     "xml2js": "^0.4.9"

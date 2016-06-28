@@ -4,7 +4,7 @@ class ForemanTask
 
     name: 'ForemanTask'
     #interval: 60 * 60 * 1000
-    interval: 15 * 60 * 1000
+    interval: 1 * 60 * 1000
     litecoins: 0.01
 
     constructor: (deps) ->

@@ -4,3 +4,4 @@ coverage.*
 cov/
 .vagrant/
 nohup.out
+app/configs/keys.coffee

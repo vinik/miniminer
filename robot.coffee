@@ -20,7 +20,7 @@ startServer = ->
 
 startTasker= ->
     tasks = []
-    # tasks.push new (require './app/src/Agents/AgentTask')
+    tasks.push new (require './app/src/Agents/PoloniexAgentTask')
     tasks.push new (require './app/src/Agents/ForemanTask')
 
     Watcher = require('waferpie-utils').Watcher
