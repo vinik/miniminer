@@ -3,7 +3,7 @@
 class PoloniexAgentTask
 
     name: 'PoloniexAgentTask'
-    interval: 1000 * 5 * 60
+    interval: 1000 * 15
     litecoins: 0.01
     keyPair: null
 
@@ -36,19 +36,20 @@ class PoloniexAgentTask
             console.log balances
 
             # o que eu tenho
-            @logger.info "[PoloniexAgentTask] I have quant coinName ($ price)"
+            console.log "[PoloniexAgentTask] I have quant coinName ($ price)"
 
             # o que eu quero comprar
-            @logger.info "[PoloniexAgentTask] I would like to have coin2Name ($ price (+ change1h)) "
+            console.log  "[PoloniexAgentTask] I would like to have coin2Name ($ price (+ change1h)) "
 
             # trocar o que eu tenho por bitcoins
-            @logger.info "[PoloniexAgentTask] I will now trade coinName for bitcoins"
+            console.log  "[PoloniexAgentTask] I will now trade coinName for bitcoins"
+            #interactor.purchaseBitcoins()
 
-            @logger.info "[PoloniexAgentTask] Ok, now I have x bitcoins"
+            console.log  "[PoloniexAgentTask] Ok, now I have x bitcoins"
 
             # trocar bitcoins pela moeda que eu quero
-            @logger.info "[PoloniexAgentTask] I will now trade bitcoins for coin2Name"
-            @logger.info "[PoloniexAgentTask] Ok, now I have x coin2Name ($ value)"
+            console.log  "[PoloniexAgentTask] I will now trade bitcoins for coin2Name"
+            console.log  "[PoloniexAgentTask] Ok, now I have x coin2Name ($ value)"
 
 
             emitter.emit 'success'

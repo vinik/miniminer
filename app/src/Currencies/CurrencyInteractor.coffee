@@ -80,7 +80,7 @@ class CurrencyInteractor
             #console.log json[0].id
 
             filteredList = _.filter json, (filtered)->
-                return filtered.percent_change_1h? and filtered.rank < 100
+                return filtered.percent_change_1h? and filtered.rank < 10
 
             #console.log orderedList
             orderedList = _.orderBy filteredList, ['percent_change_1h'], ['desc']

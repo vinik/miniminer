@@ -50,6 +50,8 @@ class PoloniexInteractor
         params = 'command=returnBalances'
 
         @query params, (balances) ->
+            console.log balances
+            
             callback balances.BTC
 
 
