@@ -47,7 +47,7 @@ class PoloniexAgentTask
 
             console.log  "[PoloniexAgentTask] Ok, now I have x bitcoins"
 
-            # trocar bitcoins pela moeda que eu quero
+            #trocar bitcoins pela moeda que eu quero
             console.log  "[PoloniexAgentTask] I will now trade bitcoins for coin2Name"
             console.log  "[PoloniexAgentTask] Ok, now I have x coin2Name ($ value)"
 
