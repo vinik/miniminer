@@ -9,6 +9,7 @@ class PoloniexAgentTask
 
     constructor: (deps) ->
         @Interactor = deps?.entities?.interactor || require '../Agents/PoloniexInteractor'
+        @CurrencyInteractor = require '../Currencies/CurrencyInteractor'
         @logger = deps?.logger || require 'winston'
         @logger.log 'info', "[PoloniexAgentTask]"
         @coins = require '../../configs/coins'
@@ -23,15 +24,17 @@ class PoloniexAgentTask
 
     run: (emitter) ->
 
+        interactor = new @Interactor
+
         @logger.info "[PoloniexAgentTask] Ok Master, let me do my work"
 
         @logger.info "[PoloniexAgentTask] Let me see how much we have"
 
         _ = require 'lodash'
 
-        interactor = new @Interactor
         interactor.getBalances (balances) ->
             return emitter.emit 'error' if balances is 'error'
+            currencyInteractor = new @CurrencyInteractor
 
             console.log balances
 
@@ -39,6 +42,7 @@ class PoloniexAgentTask
             console.log "[PoloniexAgentTask] I have quant coinName ($ price)"
 
             # o que eu quero comprar
+            currencyInteractor.getTop
             console.log  "[PoloniexAgentTask] I would like to have coin2Name ($ price (+ change1h)) "
 
             # trocar o que eu tenho por bitcoins
