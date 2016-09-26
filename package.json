@@ -32,6 +32,7 @@
     "bitcoin-mock": "^0.0.5"
   },
   "dependencies": {
+    "async": "^2.0.1",
     "bitcoinjs-lib": "^2.2.0",
     "coffee-script": "^1.10.0",
     "coinbase-service": "^1.0.4",
@@ -42,6 +43,7 @@
     "request": "^2.72.0",
     "restwork": "git://github.com/s2way/restwork.git",
     "sha512": "0.0.1",
+    "underscore": "^1.8.3",
     "waferpie-utils": "git://github.com/s2way/waferpie-utils.git",
     "winston": "^2.2.0",
     "xml2js": "^0.4.9"

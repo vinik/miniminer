@@ -3,8 +3,8 @@
 class ForemanTask
 
     name: 'ForemanTask'
-    interval: 60 * 60 * 1000
-    #interval: 15 * 60 * 1000
+    # interval: 60 * 60 * 1000
+    interval: 5 * 60 * 1000
     litecoins: 0.01
 
     constructor: (deps) ->
@@ -20,13 +20,15 @@ class ForemanTask
         interactor.getMostProfitableToMine (topFive) ->
             return emitter.emit 'error' if topFive is 'error'
 
-            _.forEach topFive, (item)->
-                console.log item
+            strMostProfitableList = ""
+
+             _.forEach topFive, (item)->
+            #     console.log item
 
 
             emitter.emit 'success'
 
-            #console.log 'info', "[ForemanTask] Master, I want to mine " + topFive
+            console.log 'info', "[ForemanTask] Master, I want to mine " + topFive
 
 
 

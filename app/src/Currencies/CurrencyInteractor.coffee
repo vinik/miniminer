@@ -60,7 +60,7 @@ class CurrencyInteractor
                 return filtered.percent_change_24h? and filtered.rank < 100
 
             #console.log orderedList
-            orderedList = _.orderBy filteredList, ['percent_change_24h'], ['desc']
+            orderedList = _.orderBy filteredList, ['percent_change_1h'], ['desc']
 
             list2 = []
             list2[index] = orderedList[index] for index in [0..4]
@@ -86,7 +86,7 @@ class CurrencyInteractor
             orderedList = _.orderBy filteredList, ['percent_change_1h'], ['desc']
 
             list2 = []
-            list2[index] = orderedList[index] for index in [0..1]
+            list2[index] = orderedList[index] for index in [0..5]
 
             callback list2
         )
