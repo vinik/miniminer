@@ -22,7 +22,7 @@ class ForemanTask
 
             strMostProfitableList = ""
 
-             _.forEach topFive, (item)->
+            #_.forEach topFive, (item)->
             #     console.log item
 
 

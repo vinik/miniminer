@@ -45,16 +45,47 @@ class PoloniexInteractor
             callback json
         )
 
+    buyCoinIWant: (coinIwant, callback) ->
+        params = 'command=buy'
+        currencyPair = "BTC_" + coinIwant.name
+        rate = ''
+        amount = coinIwant.amount
+        params += '&currencyPair=' + currencyPair
+        params += '&rate=' + rate
+        params += '&amount=' + amount
+
+        @query params, (order) ->
+            console.log order
+            callback order
+            
+    sell4Bitcoin: (coinIHave, callback) ->
+        params = 'command=sell'
+
+        currencyPair = "BTC_" + coinIHave.name
+        rate = ''
+        amount = coinIHave.amount
+
+        params += '&currencyPair=' + currencyPair
+        params += '&rate=' + rate
+        params += '&amount=' + amount
+
+        @query params, (order) ->
+            console.log order
+            callback order
 
     getBalances: (callback) ->
         params = 'command=returnBalances'
 
         @query params, (balances) ->
             # console.log balances
+            myBalances = []
 
-            callback balances.BTC
+            for own key, value of balances
+                if value > 0
+                    balanceItem = {"name":key,"amount":value}
+                    myBalances.push balanceItem
 
-
+            callback myBalances
 
     _log: (msg) ->
         console.log msg

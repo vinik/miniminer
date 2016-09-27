@@ -40,23 +40,31 @@ class PoloniexAgentTask
             # console.log balances
 
             # o que eu tenho
-            console.log "[PoloniexAgentTask] I have quant coinName ($ price)"
+            console.log "[PoloniexAgentTask] I have ", balances
+
+            coinIHave = balances[0]
 
             # o que eu quero comprar
             currencyInteractor.getTop (top) ->
                 # console.log "TOPS", top
                 coinIWant = top[0]
-                console.log  "[PoloniexAgentTask] I would like to have " + coinIWant.name + " ($ " + coinIWant.price_usd + " B" + coinIWant.price_btc + " (+ " + coinIWant.percent_change_1h + "/1h)) "
 
-                # trocar o que eu tenho por bitcoins
-                console.log  "[PoloniexAgentTask] I will now trade " + coinIWant.name + " for bitcoins"
-                #interactor.purchaseBitcoins()
+                if coinIWant.name != coinIHave.name
+                    console.log  "[PoloniexAgentTask] I would like to have " + coinIWant.name + " ($ " + coinIWant.price_usd + " B" + coinIWant.price_btc + " (+ " + coinIWant.percent_change_1h + "/1h)) "
 
-                console.log  "[PoloniexAgentTask] Ok, now I have x bitcoins"
+                    if coinIHave.name != "BTC"
+                        # trocar o que eu tenho por bitcoins
+                        console.log  "[PoloniexAgentTask] I will now trade " + coinIHave.name + " for bitcoins"
+                        interactor.sell4Bitcoin coinIHave, (order) ->
 
-                #trocar bitcoins pela moeda que eu quero
-                console.log  "[PoloniexAgentTask] I will now trade bitcoins for coin2Name"
-                console.log  "[PoloniexAgentTask] Ok, now I have x coin2Name ($ value)"
+                            console.log  "[PoloniexAgentTask] Ok, now I have x bitcoins"
+
+                            if coinIWant.name != "BTC"
+                                #trocar bitcoins pela moeda que eu quero
+                                console.log  "[PoloniexAgentTask] I will now trade bitcoins for", coinIWant.name
+                                #console.log  "[PoloniexAgentTask] Ok, now I have x coin2Name ($ value)"
+                else
+                    console.log  "[PoloniexAgentTask] Ok, I am happy with ", coinIHave.name
 
 
                 emitter.emit 'success'
