@@ -29,7 +29,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             docker.build_dir = "."
             docker.ports = [ "1234:1234" ]
             docker.privileged = true
-            docker.link 'minidb:minidb'
+            # docker.link 'minidb:minidb'
             docker.volumes = [
                 CURRENT_DIR + ":/src"
             ]

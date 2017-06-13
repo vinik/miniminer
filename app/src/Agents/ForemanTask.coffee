@@ -3,8 +3,8 @@
 class ForemanTask
 
     name: 'ForemanTask'
-    # interval: 60 * 60 * 1000
-    interval: 5 * 60 * 1000
+    interval: 60 * 60 * 1000
+    # interval: 5 * 60 * 1000
     litecoins: 0.01
 
     constructor: (deps) ->

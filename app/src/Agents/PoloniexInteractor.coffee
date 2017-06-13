@@ -28,7 +28,7 @@ class PoloniexInteractor
     query: (params, callback) ->
         request = require('request');
 
-        nsu = new Date().getTime()
+        nsu = new Date().getTime() * 10000
 
         params += '&nonce=' + nsu
         options =
@@ -40,6 +40,9 @@ class PoloniexInteractor
             form: params
 
         request(options, (error, response, body)->
+
+            # TODO error treatment
+
             #console.log(body)
             json = JSON.parse body
             callback json
@@ -57,7 +60,7 @@ class PoloniexInteractor
         @query params, (order) ->
             console.log order
             callback order
-            
+
     sell4Bitcoin: (coinIHave, callback) ->
         params = 'command=sell'
 
@@ -77,7 +80,7 @@ class PoloniexInteractor
         params = 'command=returnBalances'
 
         @query params, (balances) ->
-            # console.log balances
+            console.log balances
             myBalances = []
 
             for own key, value of balances

@@ -3,7 +3,7 @@
 class PoloniexAgentTask
 
     name: 'PoloniexAgentTask'
-    interval: 1000 * 60
+    interval: 1000 * 60 * 30
     litecoins: 0.01
     keyPair: null
 
@@ -49,6 +49,7 @@ class PoloniexAgentTask
                 console.log "TOPS", top
                 coinIWant = top[0]
 
+                console.log coinIWant
                 if coinIWant.name != coinIHave.name
                     console.log  "[PoloniexAgentTask] I would like to have " + coinIWant.name + " ($ " + coinIWant.price_usd + " B" + coinIWant.price_btc + " (+ " + coinIWant.percent_change_1h + "/1h)) "
 
