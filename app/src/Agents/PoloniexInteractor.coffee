@@ -28,7 +28,8 @@ class PoloniexInteractor
     query: (params, callback) ->
         request = require('request');
 
-        nsu = new Date().getTime() * 10000
+        # nsu = new Date().getTime() * 10000
+        nsu = new Date().getTime() + 9020150262355170100
 
         params += '&nonce=' + nsu
         options =

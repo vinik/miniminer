@@ -54,7 +54,7 @@ class CurrencyInteractor
             #console.log(body)
 
             json = JSON.parse body
-            #console.log json[0].id
+            console.log json
 
             filteredList = _.filter json, (filtered)->
                 return filtered.percent_change_24h? and filtered.rank < 100

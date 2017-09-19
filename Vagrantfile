@@ -14,7 +14,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             docker.name = "minidb"
             docker.image = "mysql"
             docker.remains_running = true
-            docker.ports = [ "3306:3306" ]
+            docker.ports = [ "33069:3306" ]
             docker.expose = [ 3306 ]
             docker.env = {
                 "MYSQL_ROOT_PASSWORD" => "changeme"
@@ -40,6 +40,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
                 'OPENSHIFT_MYSQL_DB_PASSWORD' => 'changeme',
                 'OPENSHIFT_GEAR_NAME' => 'miniminer'
             }
+            docker.link 'minidb:minidb'
         end
   end
 
